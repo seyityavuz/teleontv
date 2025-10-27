@@ -1,0 +1,29 @@
+name: Generate M3U8 Playlist
+
+on:
+  workflow_dispatch:  # Elle tetikleme için
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Repo'yu klonla
+      uses: actions/checkout@v3
+
+    - name: Python kur
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Gereksinimleri yükle
+      run: pip install -r requirements.txt || true
+
+    - name: Playlist dosyasını oluştur
+      run: python playlist_generator.py
+
+    - name: Playlist dosyasını kaydet
+      uses: actions/upload-artifact@v3
+      with:
+        name: playlist
+        path: playlist.m3u8

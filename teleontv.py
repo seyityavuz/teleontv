@@ -1,28 +1,37 @@
 import subprocess
 import os
 
-URL = "https://kick.com/teleontv"
-OUTPUT_PATH = "playlist.m3u8"
+# Kick yayını URL'si
+KICK_URL = "https://kick.com/teleontv"
 
-# Klasör oluşturmak istersen:
-# os.makedirs("linkler", exist_ok=True)
+# Çıkış dosyası
+OUTPUT_FILE = "playlist.m3u8"
 
-def update_m3u():
+def get_stream_url(kick_url):
     result = subprocess.run(
-        ["streamlink", "--stream-url", URL, "best"],
+        ["streamlink", "--stream-url", kick_url, "best"],
         capture_output=True, text=True
     )
     if result.returncode == 0:
-        stream_url = result.stdout.strip()
-        m3u_content = (
-            "#EXTM3U\n"
-            '#EXTINF:-1 tvg-id="" tvg-name="TeleonTV" tvg-logo="" group-title="Kick",TeleonTV\n'
-            f"{stream_url}\n"
-        )
-        with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-            f.write(m3u_content)
-        print("Güncellendi:", stream_url)
+        return result.stdout.strip()
     else:
         print("Streamlink hatası:", result.stderr.strip())
+        return None
 
-update_m3u()
+def write_m3u8(stream_url, output_path):
+    m3u_content = (
+        "#EXTM3U\n"
+        '#EXTINF:-1 tvg-id="" tvg-name="TeleonTV" tvg-logo="" group-title="Kick",TeleonTV\n'
+        f"{stream_url}\n"
+    )
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(m3u_content)
+    print("Playlist oluşturuldu:", output_path)
+
+def main():
+    stream_url = get_stream_url(KICK_URL)
+    if stream_url:
+        write_m3u8(stream_url, OUTPUT_FILE)
+
+if __name__ == "__main__":
+    main()

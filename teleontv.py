@@ -2,10 +2,10 @@ import subprocess
 import os
 
 URL = "https://kick.com/teleontv"
-OUTPUT_PATH = "linkler/teleontvlinki.m3u"
+OUTPUT_PATH = "playlist.m3u8"
 
-# Klasör yoksa oluştur
-os.makedirs("linkler", exist_ok=True)
+# Klasör oluşturmak istersen:
+# os.makedirs("linkler", exist_ok=True)
 
 def update_m3u():
     result = subprocess.run(
@@ -14,8 +14,12 @@ def update_m3u():
     )
     if result.returncode == 0:
         stream_url = result.stdout.strip()
-        m3u_content = f"#EXTM3U\n#EXTINF:-1,teleontv\n{stream_url}\n"
-        with open(OUTPUT_PATH, "w") as f:
+        m3u_content = (
+            "#EXTM3U\n"
+            '#EXTINF:-1 tvg-id="" tvg-name="TeleonTV" tvg-logo="" group-title="Kick",TeleonTV\n'
+            f"{stream_url}\n"
+        )
+        with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
             f.write(m3u_content)
         print("Güncellendi:", stream_url)
     else:

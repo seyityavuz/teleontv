@@ -1,7 +1,8 @@
 name: Generate M3U8 Playlist
 
 on:
-  workflow_dispatch:  # Elle tetikleme için
+  schedule:
+    - cron: '0 * * * *'  # Her saat başı çalışır
 
 jobs:
   build:

@@ -1,10 +1,7 @@
 import subprocess
 import os
 
-# Kick yayını URL'si
 KICK_URL = "https://kick.com/teleontv"
-
-# Çıkış dosyası
 OUTPUT_FILE = "playlist.m3u8"
 
 def get_stream_url(kick_url):
@@ -21,12 +18,12 @@ def get_stream_url(kick_url):
 def write_m3u8(stream_url, output_path):
     m3u_content = (
         "#EXTM3U\n"
-        '#EXTINF:-1 tvg-id="" tvg-name="TeleonTV" tvg-logo="" group-title="Kick",TeleonTV\n'
+        "#EXTINF:-1,TeleonTV\n"
         f"{stream_url}\n"
     )
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(m3u_content)
-    print("Playlist oluşturuldu:", output_path)
+    print("Gerçek M3U8 playlist oluşturuldu:", output_path)
 
 def main():
     stream_url = get_stream_url(KICK_URL)

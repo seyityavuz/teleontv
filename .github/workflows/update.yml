@@ -2,7 +2,7 @@ name: M3U Güncelle
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
+    - cron: '0 * * * *'  # Her saat başı
   workflow_dispatch:
 
 jobs:

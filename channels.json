@@ -1,12 +1,7 @@
 [
   {
     "name": "TeleonTV",
-    "url": "https://example.com/teleontv.m3u8",
-    "group": "Yerel"
-  },
-  {
-    "name": "TRT Haber",
-    "url": "https://example.com/trthaber.m3u8",
-    "group": "Haber"
+    "url": "https://kick.com/teleontv/stream.m3u8",
+    "group": "Kick"
   }
 ]

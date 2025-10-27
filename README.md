@@ -1,12 +1,10 @@
-# Kick Stream Launcher
+# IPTV Playlist Generator
 
-Bu Python scripti, Kick.com üzerindeki TeleonTV yayınının `.m3u8` bağlantısını yakalayıp VLC ile otomatik oynatır.
-
-## Gereksinimler
-- Python 3
-- VLC Media Player
-- `requests` ve `re` modülleri
+Bu Python scripti, JSON formatındaki kanal listesinden `.m3u8` uzantılı bir IPTV playlist dosyası oluşturur.
 
 ## Kullanım
+
+1. `channels.json` dosyasına yayınları ekleyin
+2. Scripti çalıştırın:
 ```bash
-python kick_stream_launcher.py
+python playlist_generator.py

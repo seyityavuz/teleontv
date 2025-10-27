@@ -20,7 +20,7 @@ jobs:
           pip install streamlink
 
       - name: M3U dosyasını güncelle
-        run: python3 teleontv.py
+        run: python3 teleontv2.py
 
       - name: Değişiklikleri GitHub'a gönder
         run: |

@@ -24,8 +24,10 @@ jobs:
 
       - name: Değişiklikleri GitHub'a gönder
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add linkler/teleontvlinki.m3u
-          git commit -m "M3U güncellendi: $(date)"
-          git push
+git config --global user.name "github-actions"
+git config --global user.email "github-actions@github.com"
+
+git pull --rebase
+git add linkler/teleontvlinki.m3u
+git commit -m "M3U güncellendi: $(date -u)"
+git push

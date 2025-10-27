@@ -17,8 +17,6 @@ def get_stream_url(kick_url):
 
 def write_m3u8(stream_url, output_path):
     m3u_content = (
-        "#EXTM3U\n"
-        "#EXTINF:-1,TeleonTV\n"
         f"{stream_url}\n"
     )
     with open(output_path, "w", encoding="utf-8") as f:

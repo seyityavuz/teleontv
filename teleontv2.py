@@ -1,54 +1,36 @@
-import subprocess
-import os
-import sys
+#!/usr/bin/env bash
+set -e
 
-URL = "https://kick.com/teleontv"
-OUTPUT_PATH = "linkler/teleontvlinki.m3u"
-COMMIT_MESSAGE = "Güncel teleontv linki eklendi"
+URL="https://kick.com/teleontv"
+OUTPUT_DIR="linkler"
+OUTPUT_FILE="$OUTPUT_DIR/teleontvlinki.m3u"
+COMMIT_MESSAGE="M3U güncellendi: $(date -u)"
 
-def log(msg):
-    print(f"[LOG] {msg}")
+echo "[LOG] Stream URL alınıyor..."
+STREAM_URL=$(streamlink --stream-url "$URL" best | tr -d '\n')
 
-def run_cmd(cmd, check=False):
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    if check and result.returncode != 0:
-        log(f"[HATA] Komut başarısız: {' '.join(cmd)}")
-        log(result.stderr.strip())
-        sys.exit(result.returncode)
-    return result
+if [[ -z "$STREAM_URL" ]]; then
+  echo "[HATA] Streamlink URL döndüremedi."
+  exit 1
+fi
 
-def update_m3u():
-    os.makedirs("linkler", exist_ok=True)
-    result = run_cmd(["streamlink", "--stream-url", URL, "best"], check=True)
-    stream_url = result.stdout.strip()
-    m3u_content = f"#EXTM3U\n#EXTINF:-1,teleontv\n{stream_url}\n"
-    with open(OUTPUT_PATH, "w") as f:
-        f.write(m3u_content)
-    log(f"[BAŞARILI] M3U dosyası güncellendi: {stream_url}")
+echo "[LOG] M3U dosyası oluşturuluyor..."
+mkdir -p "$OUTPUT_DIR"
+echo -e "#EXTM3U\n#EXTINF:-1,teleontv\n$STREAM_URL" > "$OUTPUT_FILE"
 
-def has_changes():
-    result = subprocess.run(["git", "diff", "--quiet", OUTPUT_PATH])
-    return result.returncode != 0  # 0 = değişiklik yok, 1 = değişiklik var
+echo "[LOG] Git yapılandırması..."
+git config --global user.name "github-actions"
+git config --global user.email "github-actions@github.com"
+git pull --rebase
 
-def git_commit():
-    run_cmd(["git", "config", "--global", "user.name", "github-actions"])
-    run_cmd(["git", "config", "--global", "user.email", "github-actions@github.com"])
-    run_cmd(["git", "add", OUTPUT_PATH])
-    run_cmd(["git", "commit", "-m", COMMIT_MESSAGE])
-    run_cmd(["git", "push"])
-    log("[BAŞARILI] Git commit ve push işlemi tamamlandı.")
+echo "[LOG] Değişiklik kontrolü..."
+if ! git diff --quiet "$OUTPUT_FILE"; then
+  git add "$OUTPUT_FILE"
+  git commit -m "$COMMIT_MESSAGE"
+  git push
+  echo "[BAŞARILI] Commit ve push işlemi tamamlandı."
+else
+  echo "[BİLGİ] Dosyada değişiklik yok, commit atlanıyor."
+fi
 
-def main():
-    try:
-        update_m3u()
-        if has_changes():
-            git_commit()
-        else:
-            log("[BİLGİ] Dosyada değişiklik yok, commit atlanıyor.")
-        sys.exit(0)
-    except Exception as e:
-        log(f"[HATA] Beklenmeyen hata: {str(e)}")
-        sys.exit(1)
-
-if __name__ == "__main__":
-    main()
+exit 0

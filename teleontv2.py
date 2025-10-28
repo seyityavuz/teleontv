@@ -6,9 +6,6 @@ URL = "https://kick.com/teleontv"
 OUTPUT_PATH = "playlist.m3u8"
 COMMIT_MESSAGE = "playlist.m3u8 güncellendi: " + subprocess.getoutput("date -u")
 
-# Dosya yolu varsa klasörünü oluştur
-os.makedirs(os.path.dirname(OUTPUT_PATH) or ".", exist_ok=True)
-
 def log(msg):
     print(f"[LOG] {msg}")
 
@@ -21,6 +18,7 @@ def run_cmd(cmd, check=False):
     return result
 
 def update_m3u8():
+    os.makedirs(os.path.dirname(OUTPUT_PATH) or ".", exist_ok=True)
     result = run_cmd(["streamlink", "--stream-url", URL, "best"], check=True)
     stream_url = result.stdout.strip()
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
